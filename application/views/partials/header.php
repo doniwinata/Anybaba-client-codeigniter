@@ -14,6 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
     <!-- Loading Flat UI -->
     <link href="<?php echo base_url('assets/css/flat-ui.min.css');?>" rel="stylesheet">
+     <link href="<?php echo base_url('assets/css/alertify.min.css');?>" rel="stylesheet">
     <link href="<?php echo base_url('assets/css/app.css');?>" rel="stylesheet">
     <link rel="shortcut icon" href="<?php echo base_url('assets/img/favicon.ico');?>">
 

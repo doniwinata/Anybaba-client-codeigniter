@@ -26,7 +26,7 @@
 
     <ul class="nav navbar-nav navbar-right">
 
-       <li><a  href="<?php echo site_url('auth/signup') ?>">Sign Up</a></li>
+       <li><a  href="<?php echo site_url('users/signupMember') ?>">Sign Up</a></li>
       <li><a class="btn btn-primary" href="<?php echo site_url('auth/login') ?>">Login</a></li>
     </ul>
 
