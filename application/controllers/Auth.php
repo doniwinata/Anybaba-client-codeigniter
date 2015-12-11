@@ -2,6 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 include('/httpful.phar');
+//use \League\OAuth2\Client\Provider\Facebook;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Auth extends CI_Controller {
 
@@ -67,16 +70,29 @@ class Auth extends CI_Controller {
 					$this->load->view('partials/footer');
 				}
 				else {
+					$this->session->name = $res['name'];
+					$this->session->email = $res['email'];
+					$this->session->credentials = $res['credentials'];
+					$this->session->id = $res['id'];
+					$this->session->type = 'manual';	
 					$this->session->set_flashdata('message', 'Login Success');
-					redirect('/auth/login');
+					
+					//check credentials
+					if($res['credentials'] == 'member')
+					{
+						redirect('pages');
+					}
+					else if ($res['credentials'] == 'administrator')
+					{
+						redirect('backend');	
+					}
+					
 				}
-
-
-				//redirect('/auth/login');
 			}
 		}
 		else{
 			$data['page_title'] = 'ANYBABA|LOGIN';
+			
 			$this->load->view('partials/header', $data);
 			$this->load->view('partials/navbar');
 			$this->load->view('partials/login');
@@ -85,5 +101,137 @@ class Auth extends CI_Controller {
 		
 	}
 
-	
+
+	public function logout()
+	{
+		$this->session->sess_destroy();
+		redirect('pages');		
+	}	
+
+	public function loginFacebook()
+	{
+
+		
+		$fb = new Facebook\Facebook([
+			'app_id' => '527659474057676',
+			'app_secret' => '54c9dbc57f17ef6e17d28d68566dcf53',
+			'default_graph_version' => 'v2.2',
+			]);
+
+		$helper = $fb->getRedirectLoginHelper();
+		$permissions = ['email']; // optional
+		$redirect = site_url().'/auth/cb_facebook';
+		$loginUrl = $helper->getLoginUrl($redirect, $permissions);
+		redirect($loginUrl);
+	}
+	public function cb_facebook()
+	{
+		$fb = new Facebook\Facebook([
+			'app_id' => '527659474057676',
+			'app_secret' => '54c9dbc57f17ef6e17d28d68566dcf53',
+			'default_graph_version' => 'v2.2',
+			]);
+
+		$helper = $fb->getRedirectLoginHelper();
+		try {
+			$accessToken = $helper->getAccessToken();
+		} catch(Facebook\Exceptions\FacebookResponseException $e) {
+  // When Graph returns an error
+			echo 'Graph returned an error: ' . $e->getMessage();
+			exit;
+		} catch(Facebook\Exceptions\FacebookSDKException $e) {
+  // When validation fails or other local issues
+			echo 'Facebook SDK returned an error: ' . $e->getMessage();
+			exit;
+		}
+
+		if (isset($accessToken)) {
+  // Logged in!
+			
+			try {
+  // Returns a `Facebook\FacebookResponse` object
+				$response = $fb->get('/me?fields=id,name,email', $accessToken);
+			} catch(Facebook\Exceptions\FacebookResponseException $e) {
+				echo 'Graph returned an error: ' . $e->getMessage();
+				exit;
+			} catch(Facebook\Exceptions\FacebookSDKException $e) {
+				echo 'Facebook SDK returned an error: ' . $e->getMessage();
+				exit;
+			}
+
+			$user = $response->getGraphUser();
+
+			//register user to table oauth if not found
+
+			$url = $this->config->item('serv_url').'/backend/users/addoauth';
+			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
+			$response = \Httpful\Request::post($url)
+			->body('{"type":"facebook", "user_email":"'.$user['email'].'", "credentials":"member", "user_id" :"'.$user['id'].'", "user_name" :"'.$user['name'].'"}')
+			->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 
+
+			$this->session->name = $user['name'];
+			$this->session->email = $user['email'];
+			$this->session->credentials = 'member';
+			$this->session->id = $user['id'];
+			$this->session->type = 'facebook';			
+			$this->session->set_flashdata('message', 'Login Success');
+			redirect('pages');
+					//check credentials
+		}
+	}
+
+	public function loginGoogle(){
+		
+		if(isset($_GET['error'])){
+			redirect('auth/login');
+		}
+		$client_id = '863576228912-j98f00u2sf7qvk94u4r2tpi2jt72jdpd.apps.googleusercontent.com';
+		$client_secret = 'ugwpjoh9Qd_0DK6KaxQ-o1yN';
+		$redirect = site_url().'/auth/loginGoogle';
+		$redirect_uri = $redirect;
+		//$simple_api_key = '<Your-API-Key>';
+
+
+		$client = new Google_Client();
+		$client->setApplicationName("ANYBABA");
+		$client->setClientId($client_id);
+		$client->setClientSecret($client_secret);
+		$client->setRedirectUri($redirect_uri);
+		$client->addScope("https://www.googleapis.com/auth/userinfo.email");
+
+		$objOAuthService = new Google_Service_Oauth2($client);
+
+		$authUrl = $client->createAuthUrl();
+		
+		if (isset($_GET['code'])) {
+			$client->authenticate($_GET['code']);
+			$_SESSION['access_token'] = $client->getAccessToken();
+			if ($client->getAccessToken()) {
+				$user = $objOAuthService->userinfo->get();
+				
+
+				$url = $this->config->item('serv_url').'/backend/users/addoauth';
+			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
+				$response = \Httpful\Request::post($url)
+				->body('{"type":"google", "user_email":"'.$user['email'].'", "credentials":"member", "user_id" :"'.$user['id'].'", "user_name" :"'.$user['givenName'].' '.$user['familyName'].'"}')
+				->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 
+
+				$this->session->name =$user['givenName'].' '.$user['familyName'];
+				$this->session->email = $user['email'];
+				$this->session->credentials = 'member';
+				$this->session->id = $user['id'];
+				$this->session->type = 'facebook';			
+				$this->session->set_flashdata('message', 'Login Success');
+				redirect('pages');
+			} else {
+				redirect($client->createAuthUrl());
+			}
+		}
+		else{
+			redirect($client->createAuthUrl());
+		}
+
+	}
+
+
 }

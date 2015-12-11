@@ -26,22 +26,22 @@
 		<div class="form-group">
 			<div class="row">
 			<div class="col-lg-6">
-			<a class="btn btn-info  btn-lg btn-block  " href="#"><span class="fui-facebook"> </span>Facebook</a>
+			<a class="btn btn-info  btn-lg btn-block  " href="<?php echo site_url().'/auth/loginFacebook'; ?>"><span class="fui-facebook"> </span>Facebook</a>
 			
 			</div>
 			<div class="col-lg-6">
-			<a class="btn btn-danger btn-lg btn-block " href="#"><span class="fui-google-plus"> Google +</span></a>
+			<a class="btn btn-danger btn-lg btn-block " href="<?php echo site_url().'/auth/loginGoogle'; ?>"><span class="fui-google-plus"> Google +</span></a>
 			
 			</div>
 		</div>
 		</div>
 		<div class="form-group">
-			<input name="user[email]" type="email" class="form-control login-field" value="<?php echo set_value('user[email]'); ?>" placeholder="Email Address" id="login-name"  required>
+			<input name="user[email]" type="email" class="form-control login-field" value="" placeholder="Email Address" id="login-name"  required>
 			<label class="login-field-icon fui-user" for="login-name"></label>
 		</div>
 
 		<div class="form-group">
-			<input name="user[password]" type="password" class="form-control login-field" value="<?php echo set_value('user[password]'); ?>" placeholder="Password" id="login-pass" >
+			<input name="user[password]" type="password" class="form-control login-field" value="" placeholder="Password" id="login-pass" >
 			
 			<label class="login-field-icon fui-lock" for="login-pass"></label>
 		</div>

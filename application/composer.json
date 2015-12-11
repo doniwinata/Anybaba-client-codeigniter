@@ -1,0 +1,9 @@
+{
+	
+    "require": {
+        "firebase/php-jwt": "^3.0",
+        "facebook/php-sdk-v4": "^5.1",
+        "guzzlehttp/guzzle": "5.2.*",
+        "google/apiclient": "^1.1"
+    }
+}
