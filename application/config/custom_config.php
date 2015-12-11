@@ -1,8 +1,17 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 //adding config items.
 use \Firebase\JWT\JWT;
-$config['serv_url'] = 'http://localhost:3000';
+$url = 'http://localhost:3000';
+$handle = curl_init($url);
+$response = curl_exec($handle);
 
+$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+if($httpCode == 0){
+	$config['serv_url'] = 'https://anybaba-services.herokuapp.com';
+}
+
+print_r($config['serv_url']);
+curl_close($handle);
 $client_id= 'this_is_client_id';
 $client_secret = 'this_is_client_secret';
 $service_secret = 'this_is_secret_key';
@@ -13,6 +22,6 @@ $token = array(
 	"client_secret" => $client_secret
 	);
 
- $jwt = JWT::encode($token, $key);
+$jwt = JWT::encode($token, $key);
 
 $config['token'] = $jwt;
