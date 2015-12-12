@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-include('/httpful.phar');
+
 //use \League\OAuth2\Client\Provider\Facebook;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
+use Httpful\Httpful;
 class Auth extends CI_Controller {
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-include('/httpful.phar');
+use Httpful\Httpful;
 
 
 defined('BASEPATH') OR exit('No direct script access allowed');
