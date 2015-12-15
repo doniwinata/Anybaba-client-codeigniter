@@ -31,21 +31,11 @@ class Backend extends CI_Controller {
 	public function index()
 	{
 		$data['page_title'] = 'ANYBABA|DASHBOARD';
-		$this->load->view('partials/header', $data);
-		$this->load->view('partials/navbar');
-		$this->load->view('partials/dashboard');
-		$this->load->view('partials/footer');
+			$this->load->view('partials/backend/header', $data);
+			$this->load->view('partials/backend/navbar');
+			$this->load->view('partials/backend/dashboard');
+			$this->load->view('partials/backend/footer');
 	}
+	
 
-	public function dashboard()
-	{
-		if($this->session->userdata('credentials'))
-		{
-			$data['page_title'] = 'ANYBABA|DASHBOARD';
-			$this->load->view('partials/header', $data);
-			$this->load->view('partials/navbar');
-			$this->load->view('partials/dashboard');
-			$this->load->view('partials/footer');
-		}
-	}
 }

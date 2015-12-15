@@ -3,16 +3,18 @@
 use \Firebase\JWT\JWT;
 $url = 'http://localhost:3000';
 $handle = curl_init($url);
+//curl_exec($handle);
 
 
 $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
 if($httpCode == 0){
 	$config['serv_url'] = 'https://anybaba-services.herokuapp.com';
 }
 else{
 	$config['serv_url'] = $url;
 }
-
+$config['serv_url'] = $url;
 
 curl_close($handle);
 $client_id= 'this_is_client_id';

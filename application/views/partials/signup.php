@@ -10,7 +10,7 @@
 	</div>
 	<?php } ?>
 	
-	<?php echo form_open('users/signupMember'); ?>
+	<?php echo form_open('auth/signupMember'); ?>
 	<div class="login-form">
 
 		<div class="form-group">

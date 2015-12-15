@@ -104,7 +104,7 @@
 
           
         <?php } else { ?>
-         <li><a  href="<?php echo site_url('users/signupMember') ?>">Sign Up</a></li>
+         <li><a  href="<?php echo site_url('auth/signupMember') ?>">Sign Up</a></li>
          <li><a class="btn btn-primary" href="<?php echo site_url('auth/login') ?>">Login</a></li>
           <?php } ?>
        </ul>
