@@ -15,8 +15,9 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
             <span class="dropdown-arrow"></span>
             <ul class="dropdown-menu">
-             <li><a href="#">Add New</a></li>
-             <li><a href="#">Member</a></li>
+             <li><a href="<?php echo site_url('/products/add') ?>">Add New</a></li>
+             <li><a href="<?php echo site_url('/products') ?>">Products</a></li>
+           
            </ul>
          </li>
          <li class="dropdown">
@@ -76,8 +77,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, <?php echo $this->session->userdata('name')?> <b class="caret"></b></a>
     <span class="dropdown-arrow"></span>
     <ul class="dropdown-menu">
-      <li><a href="#">Carts</a></li>
-      <li><a href="#">Wishlist</a></li>
+      <li><a href="#">Order History</a></li>
       <li><a href="#">Settings</a></li>
       <li class="divider"></li>
       <li><a class="btn btn-success" href="<?php echo site_url('auth/logout') ?>">Logout</a></li>

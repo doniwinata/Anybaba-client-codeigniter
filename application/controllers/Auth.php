@@ -245,13 +245,31 @@ class Auth extends CI_Controller {
 			->body('{"type":"facebook", "user_email":"'.$user['email'].'", "credentials":"member", "user_id" :"'.$user['id'].'", "user_name" :"'.$user['name'].'"}')
 			->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 
 
-			$this->session->name = $user['name'];
-			$this->session->email = $user['email'];
-			$this->session->credentials = 'member';
-			$this->session->id = $user['id'];
-			$this->session->type = 'facebook';			
+			$url = $this->config->item('serv_url').'/backend/users/findEmail';
+			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
+			$response = \Httpful\Request::post($url)
+			->body('{ "email":"'.$user['email'].'"}')
+			->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 		
+			$res =json_decode($response, true);
+			$res = $res[0];
+			//print_r($res);exit();
+			$this->session->name = $res['first_name'];
+			$this->session->email = $res['email'];
+			$this->session->credentials = $res['credentials'];
+			$this->session->id = $res['id'];
+			$this->session->type = 'manual';	
 			$this->session->set_flashdata('message', 'Login Success');
-			redirect('pages');
+
+					//check credentials
+			if($res['credentials'] == 'member')
+			{
+				redirect('pages');
+			}
+			else if ($res['credentials'] == 'administrator' || $res['credentials'] == 'manager')
+			{
+				redirect('backend');	
+			}
+
 					//check credentials
 		}
 	}
@@ -296,7 +314,7 @@ class Auth extends CI_Controller {
 				$this->session->email = $user['email'];
 				$this->session->credentials = 'member';
 				$this->session->id = $user['id'];
-				$this->session->type = 'facebook';			
+				$this->session->type = 'google';			
 				$this->session->set_flashdata('message', 'Login Success');
 				redirect('pages');
 			} else {

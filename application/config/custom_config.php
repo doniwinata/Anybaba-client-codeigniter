@@ -3,8 +3,11 @@
 use \Firebase\JWT\JWT;
 $url = 'http://localhost:3000';
 $handle = curl_init($url);
-//curl_exec($handle);
 
+
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
+
+$result = curl_exec($handle);
 
 $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 
@@ -14,7 +17,7 @@ if($httpCode == 0){
 else{
 	$config['serv_url'] = $url;
 }
-$config['serv_url'] = $url;
+//$config['serv_url'] = $url;
 
 curl_close($handle);
 $client_id= 'this_is_client_id';

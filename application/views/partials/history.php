@@ -51,7 +51,7 @@ X'mas 配件專區3件85折
 X'mas 交換禮物
       </div>
        <div class="col-lg-9">
-         <?php  echo $products ?>
+         <?php  echo $histories ?>
       </div>
       <!-- Example row of columns -->
          
