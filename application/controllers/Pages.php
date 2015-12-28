@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pages extends CI_CONTROLLER {
-
+	
 	/**
 	 * Index Page for this controller.
 	 *
@@ -29,9 +29,12 @@ class Pages extends CI_CONTROLLER {
 		$res =json_decode($response, true);
 		
 		$data['products'] = $this->makeProducts($res);
-		$cartData =  $this -> getCarts();
-		$data['carts'] =$cartData['element'];
-		$data['numcarts'] =$cartData['number'];  
+		if($this->session->has_userdata('credentials')){
+			$cartData =  $this -> getCarts();
+			$data['carts'] =$cartData['element'];
+			$data['numcarts'] =$cartData['number']; 
+		}
+		
 		$data['page_title'] = 'ANYBABA|HOME';
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/navbar');
@@ -79,8 +82,8 @@ class Pages extends CI_CONTROLLER {
 		}
 		
 		$element.='<li class="divider"></li>
-			<li><a class="text-center" href="'.$orderLink.'">Order</a></li>
-			</ul>';
+		<li><a class="text-center" href="'.$orderLink.'">Order</a></li>
+		</ul>';
 		$element = $conter == 0 ? '': $element;
 		$data = array();
 		$data['number'] = $conter;
@@ -93,12 +96,14 @@ class Pages extends CI_CONTROLLER {
 		->addHeader('x-access-token', $this->config->item('token')) 
 		->sendsJson()->send(); 
 		$res =json_decode($response, true);
-		
+		//print_r($res);
 		if(!isset($res['Error']))
 		{
+
 			return $this->makeCarts($res);
 		}else{
-			return  'No Data';
+
+			return   'No Data';
 		}
 
 	}
@@ -120,7 +125,7 @@ class Pages extends CI_CONTROLLER {
 
 			<h3 class="tile-title">'. $row['name'].' | '. $row['price'].'$</h3>
 			<p>'.$row['description'].'</p>
-			<p><a class="btn btn-success" href="#" role="button"> details &raquo;</a>
+			<p>
 			<a class="btn btn-primary" href="'.$linkCarts.'" role="button"><span class="glyphicon glyphicon-shopping-cart"></span></a>
 			</p>
 			</div>
@@ -147,6 +152,13 @@ class Pages extends CI_CONTROLLER {
 		}else{
 			$data['products'] = 'No Data';
 		}
+
+		if($this->session->has_userdata('credentials')){
+			$cartData =  $this -> getCarts();
+			$data['carts'] =$cartData['element'];
+			$data['numcarts'] =$cartData['number']; 
+		}
+		
 		$data['page_title'] = 'ANYBABA|HOME';
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/navbar');
@@ -166,5 +178,54 @@ class Pages extends CI_CONTROLLER {
 		
 	}
 
+	public function history(){
+		$url = $this->config->item('serv_url').'/backend/orders/histories/'.$this->session->id;
+			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
+		$response = \Httpful\Request::get($url)
+		->addHeader('x-access-token', $this->config->item('token')) 
+		->sendsJson()->send(); 
+		$res =json_decode($response, true);
+		
+		$cartData =  $this -> getCarts();
+		//print_r($cartData);exit();
+		$data['carts'] =$cartData['element'];
+		$data['numcarts'] =$cartData['number'];  
+		$data['page_title'] = 'ANYBABA|Order History';
+
+		$data['histories'] = $this->makeHistories($res);
+		$this->load->view('partials/header', $data);
+		$this->load->view('partials/navbar');
+		$this->load->view('partials/history');
+		//$this->load->view('partials/backend/form/products');
+		$this->load->view('partials/footer');
+
+		
+	}
+	public function makeHistories($res)
+	{
+		$result = '<thead><tr>
+		<th>Code</th>
+		<th>Total</th>
+		<th>Order Date</th>
+		<th>Status</th>
+		
+		</tr></thead><tbody>';
+
+		foreach($res as $row){
+			
+			$created = date("l, d-m-Y", strtotime($row['created_at']));
+			$detail = site_url().'/orders/detail/'.$row['code'];
+			$paid = site_url().'/orders/paid/'.$row['code'];
+			
+			$result .= '<tr>';
+			$result .= '<td>'.$row['code'].'</td>';
+			$result .= '<td>'.$row['total'].' $ </td>';
+			$result .= '<td>'.$created.'</td>';
+			$result .= '<td>'.$row['status'].'</td>';
+			
+			$result .= '</tr>';
+		}
+		return $result;
+	}
 	
 }

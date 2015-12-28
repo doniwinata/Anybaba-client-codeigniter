@@ -6,6 +6,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Httpful\Httpful;
+use \Firebase\JWT\JWT;
 class Auth extends CI_Controller {
 
 	/**
@@ -72,9 +73,12 @@ class Auth extends CI_Controller {
 			{
 				//if valid data
 				$url = $this->config->item('serv_url').'/backend/users/addmember';
+				//print_r(json_encode($user));
+				$jwt = JWT::encode(json_encode($user), $this->config->item('service_secret'));
+				//print_r($jwt);exit();
 			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
 				$response = \Httpful\Request::post($url)
-				->body('{"email":"'.$user['email'].'", "password":"'.$user['password'].'", "first_name":"'.$user['first_name'].'", "last_name":"'.$user['last_name'].'"}')
+				->body('{"data":"'.$jwt.'"}')
 				->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 
 
 				$res =json_decode($response, true);
@@ -127,15 +131,18 @@ class Auth extends CI_Controller {
 			else
 			{
 				//if valid data
-				
+				$jwt = JWT::encode(json_encode($user), $this->config->item('service_secret'));
 				$url = $this->config->item('serv_url').'/backend/users/login';
 			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
 				$response = \Httpful\Request::post($url)
-				->body('{"email":"'.$user['email'].'", "password":"'.$user['password'].'"}')
+				->body('{"data":"'.$jwt.'"}')
 				->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 
 
 				$res =json_decode($response, true);
-
+				
+				$res = JWT::decode($res, $this->config->item('service_secret'), array('HS256'));
+				
+				$res = json_decode(json_encode($res), true);
 				if($res['Error']){
 
 					$data['page_title'] = 'ANYBABA|LOGIN';
@@ -310,13 +317,33 @@ class Auth extends CI_Controller {
 				->body('{"type":"google", "user_email":"'.$user['email'].'", "credentials":"member", "user_id" :"'.$user['id'].'", "user_name" :"'.$user['givenName'].' '.$user['familyName'].'"}')
 				->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 
 
-				$this->session->name =$user['givenName'].' '.$user['familyName'];
-				$this->session->email = $user['email'];
-				$this->session->credentials = 'member';
-				$this->session->id = $user['id'];
-				$this->session->type = 'google';			
+
+				$url = $this->config->item('serv_url').'/backend/users/findEmail';
+			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
+				$response = \Httpful\Request::post($url)
+				->body('{ "email":"'.$user['email'].'"}')
+				->addHeader('x-access-token', $this->config->item('token')) ->sendsJson()->send(); 		
+				$res =json_decode($response, true);
+				$res = $res[0];
+			//print_r($res);exit();
+				$this->session->name = $res['first_name'];
+				$this->session->email = $res['email'];
+				$this->session->credentials = $res['credentials'];
+				$this->session->id = $res['id'];
+				$this->session->type = 'manual';	
 				$this->session->set_flashdata('message', 'Login Success');
-				redirect('pages');
+
+					//check credentials
+				if($res['credentials'] == 'member')
+				{
+					redirect('pages');
+				}
+				else if ($res['credentials'] == 'administrator' || $res['credentials'] == 'manager')
+				{
+					redirect('backend');	
+				}
+				
+				
 			} else {
 				redirect($client->createAuthUrl());
 			}

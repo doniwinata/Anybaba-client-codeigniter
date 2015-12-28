@@ -60,6 +60,31 @@ class Members extends CI_Controller {
 		}
 		return $result;
 	}
+	public function makeTableReport($res)
+	{
+		$result = '<thead><tr>
+		<th>Name</th>
+		<th>Email</th>
+		<th>Status</th>
+		<th>Updated At</th>
+		<th>Created At</th>
+		
+		</tr></thead><tbody>';
+		foreach($res as $row){
+			$updated = date("l, d-m-Y", strtotime($row['updated_at']));
+			$created = date("l, d-m-Y", strtotime($row['created_at']));
+
+		
+			$result .= '<tr>';
+			$result .= '<td>'.$row['first_name']. ' '.$row['last_name'].'</td>';
+			$result .= '<td>'.$row['email'].'</td>';
+			$result .= '<td>'.$row['status'].'</td>';
+			$result .= '<td>'.$updated.'</td>';
+			$result .= '<td>'.$created.'</td>';
+			$result .= '</tr>';
+		}
+		return $result;
+	}
 	public function index()
 	{
 		$url = $this->config->item('serv_url').'/backend/users/members';
@@ -76,7 +101,7 @@ class Members extends CI_Controller {
 		$data['table'] = $this->makeTable($this->data);
 		$this->load->view('partials/backend/header', $data);
 		$this->load->view('partials/backend/navbar');
-		$this->load->view('partials/backend/table');
+		$this->load->view('partials/backend/tableMember');
 		$this->load->view('partials/backend/form/members');
 		$this->load->view('partials/backend/footer');
 		$this->load->view('partials/backend/script/members');	
@@ -118,8 +143,25 @@ class Members extends CI_Controller {
 
 		}
 	}
-	public function update(){
+	public function reportMember(){
+		$url = $this->config->item('serv_url').'/backend/users/members';
+			// [ req.body.email, hash, req.body.credentials, req.body.first_name, req.body.last_name];
+		$response = \Httpful\Request::get($url)
+		->addHeader('x-access-token', $this->config->item('token')) 
+		->sendsJson()->send(); 
+		$res =json_decode($response, true);
+		$this->data = $res;
 
+		$data['page_title'] = 'ANYBABA|MEMBERS';
+		$data['link_add'] = '/auth/signupMember';
+		$data['type'] = 'Member';
+		$data['table'] = $this->makeTableReport($this->data);
+		$this->load->view('partials/backend/header', $data);
+		$this->load->view('partials/backend/navbar');
+		$this->load->view('partials/backend/tableMember');
+		$this->load->view('partials/backend/form/members');
+		$this->load->view('partials/backend/footer');
+		$this->load->view('partials/backend/script/members');	
 	}
 
 }

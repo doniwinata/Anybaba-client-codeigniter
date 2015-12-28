@@ -6,13 +6,13 @@ $handle = curl_init($url);
 
 
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, TRUE);
-
+curl_setopt($handle, CURLOPT_TIMEOUT,1);
 $result = curl_exec($handle);
 
 $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 
 if($httpCode == 0){
-	$config['serv_url'] = 'https://anybaba-services.herokuapp.com';
+	$config['serv_url'] = 'http://localhost:3030';
 }
 else{
 	$config['serv_url'] = $url;
@@ -20,16 +20,17 @@ else{
 //$config['serv_url'] = $url;
 
 curl_close($handle);
-$client_id= 'this_is_client_id';
-$client_secret = 'this_is_client_secret';
-$service_secret = 'this_is_secret_key';
+$client_id= '0UgWuwIEeATm';
 
+$service_secret = 'MD8CAQACCQC+jQHtWqZAXQIDAQABAghI';
+$config['service_secret'] = $service_secret;
+$date = new DateTime();
+$config['time'] = $date->getTimestamp();
 $key = $service_secret;
 $token = array(
 	"client_id" => $client_id,
-	"client_secret" => $client_secret
+	"timestamp" =>  $date->getTimestamp()
 	);
 
 $jwt = JWT::encode($token, $key);
-
 $config['token'] = $jwt;

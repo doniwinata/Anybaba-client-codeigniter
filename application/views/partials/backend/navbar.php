@@ -17,33 +17,21 @@
             <ul class="dropdown-menu">
              <li><a href="<?php echo site_url('/products/add') ?>">Add New</a></li>
              <li><a href="<?php echo site_url('/products') ?>">Products</a></li>
-           
+
            </ul>
          </li>
-         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Order <b class="caret"></b></a>
-          <span class="dropdown-arrow"></span>
-          <ul class="dropdown-menu">
-           <li><a href="#">Add New</a></li>
-           <li><a href="#">Member</a></li>
-         </ul>
-       </li>
+         <li> <a href="<?php echo site_url('/orders/manage/ordering') ?>" >Orders </a></li>
+        
        <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Report <b class="caret"></b></a>
         <span class="dropdown-arrow"></span>
         <ul class="dropdown-menu">
-         <li><a href="#">Add New</a></li>
-         <li><a href="#">Member</a></li>
+         <li><a href="<?php echo  site_url().'/orders/reportOrder/ordering' ?>">Orders</a></li>
+         <li><a href="<?php echo  site_url().'/members/reportMember' ?>">Member</a></li>
+      
        </ul>
      </li>
-     <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pages <b class="caret"></b></a>
-      <span class="dropdown-arrow"></span>
-      <ul class="dropdown-menu">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">About us</a></li>
-      </ul>
-    </li>
+     
     <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Members <b class="caret"></b></a>
       <span class="dropdown-arrow"></span>
@@ -54,18 +42,7 @@
 
       </ul>
     </li>
-    <?php if($this->session->userdata('credentials') == 'manager') { ?>
-    <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Employees <b class="caret"></b></a>
-      <span class="dropdown-arrow"></span>
-      <ul class="dropdown-menu">
-         <li><a href="#">Employees</a></li>
-        <li><a href="#">Add New</a></li>
-       
-      </ul>
-    </li>
-  </li>
-  <?php } ?>
+   
 
 </ul>
 
@@ -77,9 +54,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, <?php echo $this->session->userdata('name')?> <b class="caret"></b></a>
     <span class="dropdown-arrow"></span>
     <ul class="dropdown-menu">
-      <li><a href="#">Order History</a></li>
-      <li><a href="#">Settings</a></li>
-      <li class="divider"></li>
+     
       <li><a class="btn btn-success" href="<?php echo site_url('auth/logout') ?>">Logout</a></li>
     </ul>
   </li>

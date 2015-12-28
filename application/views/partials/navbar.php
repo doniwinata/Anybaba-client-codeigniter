@@ -10,47 +10,36 @@
       <div class="collapse navbar-collapse" id="navbar-collapse-01">
         <ul class="nav navbar-nav navbar-left">
 
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <b class="caret"></b></a>
-            <span class="dropdown-arrow"></span>
-            <ul class="dropdown-menu">
-              <li><a href="<?php echo site_url().'/pages/categories/clothes' ?>">Clothes</a></li>
-              <li><a href="<?php echo site_url().'/pages/categories/watches' ?>">Watches</a></li>
-              <li><a href="<?php echo site_url().'/pages/categories/bags' ?>">Bags</a></li>
-              <li><a href="<?php echo site_url().'/pages/categories/accessories' ?>">Accessories</a></li>
-              <li class="divider"></li>
-              <li><a href="<?php echo site_url().'/' ?>">Home</a></li>
-            </ul>
-          </li>
-          <li><a href="#fakelink">About Us</a></li>
-        </ul>
+         <li><a href="<?php echo site_url().'/pages/categories/clothes' ?>">Clothes</a></li>
+         <li><a href="<?php echo site_url().'/pages/categories/watches' ?>">Watches</a></li>
+         <li><a href="<?php echo site_url().'/pages/categories/bags' ?>">Bags</a></li>
+         <li><a href="<?php echo site_url().'/pages/categories/accessories' ?>">Accessories</a></li>
+       </ul>
 
-        <ul class="nav navbar-nav navbar-right">
-          <?php if($this->session->has_userdata('credentials')) { ?>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <span class="glyphicon glyphicon-shopping-cart"></span> <?php echo $numcarts ?> - Items<span class="caret"></span></a>
-             <?php echo $carts; ?>
-            
-          </li>
-
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, <?php echo $this->session->userdata('name')?> <b class="caret"></b></a>
-            <span class="dropdown-arrow"></span>
-            <ul class="dropdown-menu">
-              <li><a href="<?php echo site_url().'/orders/history' ?>">Order History</a></li>
-             
-              <li><a href="#">Settings</a></li>
-              <li class="divider"></li>
-              <li><a class="btn btn-success" href="<?php echo site_url('auth/logout') ?>">Logout</a></li>
-            </ul>
-          </li>
-
+       <ul class="nav navbar-nav navbar-right">
+        <?php if($this->session->has_userdata('credentials')) { ?>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> <span class="glyphicon glyphicon-shopping-cart"></span> <?php echo $numcarts ?> - Items<span class="caret"></span></a>
+          <?php echo $carts; ?>
           
-          <?php } else { ?>
-          <li><a  href="<?php echo site_url('auth/signupMember') ?>">Sign Up</a></li>
-          <li><a class="btn btn-primary" href="<?php echo site_url('auth/login') ?>">Login</a></li>
-          <?php } ?>
-        </ul>
+        </li>
 
-      </div><!-- /.navbar-collapse -->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hello, <?php echo $this->session->userdata('name')?> <b class="caret"></b></a>
+          <span class="dropdown-arrow"></span>
+          <ul class="dropdown-menu">
+            <li><a href="<?php echo site_url().'/pages/history' ?>">Order History</a></li>           
+            <li class="divider"></li>
+            <li><a class="btn btn-success" href="<?php echo site_url('auth/logout') ?>">Logout</a></li>
+          </ul>
+        </li>
+
+        
+        <?php } else { ?>
+        <li><a  href="<?php echo site_url('auth/signupMember') ?>">Sign Up</a></li>
+        <li><a class="btn btn-primary" href="<?php echo site_url('auth/login') ?>">Login</a></li>
+        <?php } ?>
+      </ul>
+
+    </div><!-- /.navbar-collapse -->
           </nav><!-- /navbar -->

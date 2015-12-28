@@ -46,11 +46,11 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-lg-6">
-					<a class="btn btn-info  btn-lg btn-block  " href="#"><span class="fui-facebook"> </span>Facebook</a>
+					<a class="btn btn-info  btn-lg btn-block  "  href="<?php echo site_url().'/auth/loginFacebook'; ?>"><span class="fui-facebook"> </span>Facebook</a>
 
 				</div>
 				<div class="col-lg-6">
-					<a class="btn btn-danger btn-lg btn-block " href="#"><span class="fui-google-plus"> Google +</span></a>
+					<a class="btn btn-danger btn-lg btn-block "  href="<?php echo site_url().'/auth/loginGoogle'; ?>"><span class="fui-google-plus"> Google +</span></a>
 
 				</div>
 			</div>
