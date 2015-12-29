@@ -21,7 +21,6 @@ else{
 
 curl_close($handle);
 $client_id= '0UgWuwIEeATm';
-
 $service_secret = 'MD8CAQACCQC+jQHtWqZAXQIDAQABAghI';
 $config['service_secret'] = $service_secret;
 $date = new DateTime();
